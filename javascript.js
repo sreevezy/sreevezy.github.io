@@ -3,7 +3,7 @@ chart("data.csv", "orange");
 var datearray = [];
 var colorrange = [];
 
-document.getElementById("test1").innerHTML = "javascript updated!";
+document.getElementById("test1").innerHTML = "updated 2";
 
 
 
@@ -168,7 +168,7 @@ var graph = d3.csv(csvpath, function(data) {
          vertical.style("left", mousex + "px" )})
       .on("mouseover", function(){  
          mousex = d3.mouse(this);
-         mousex = mousex[0] + 5;
+         mousex = mousex[0] + 30;
          vertical.style("left", mousex + "px")});
 });
 }
