@@ -1,4 +1,4 @@
-chart("data.csv", "orange");
+chart("data.csv", "blue");
 
 var datearray = [];
 var colorrange = [];
