@@ -3,7 +3,8 @@ chart("data.csv", "blue");
 var datearray = [];
 var colorrange = [];
 
-
+var test1 = document.getElementById("test1");
+test1 = "js updated";
 
 
 
