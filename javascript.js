@@ -18,7 +18,7 @@ else if (color == "pink") {
 else if (color == "orange") {
   colorrange = ["#B30000", "#E34A33", "#FC8D59", "#FDBB84", "#FDD49E", "#FEF0D9"];
 }
-strokecolor = "black";
+strokecolor = "green";
 
 var format = d3.time.format("%d/%m/%y");
 
