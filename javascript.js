@@ -82,11 +82,15 @@ class Streamgraph {
 
 	/** Generates the graph inside the specified element. 	*/
 	drawChart () {
+		
+		// Converts color range value (eg. 'red', 'blue') into the appropriate color array
 		this.colorRange = this.convertColorRange(this.colorRange);
 
+		// Set width and height of graph based on size of bounding element and margins
 		var width = document.getElementById(this.elementName).offsetWidth - this.marginLeft - this.marginRight;
 		var height = document.getElementById(this.elementName).offsetHeight - this.marginTop - this.marginBottom;
 
+		// Create axis, streams etc.		
 		var x = d3.time.scale()
 			.range([0, width]);
 
@@ -118,13 +122,15 @@ class Streamgraph {
 			.x(function (d) { return x(d.date); })
 			.y0(function (d) { return y(d.y0); })
 			.y1(function (d) { return y(d.y0 + d.y); });
-
+	
+		// Create SVG area of an appropriate size
 		var svg = d3.select(this.element).append('svg')
 			.attr('width', width + this.marginLeft + this.marginRight)
 			.attr('height', height + this.marginTop + this.marginBottom)
 			.append('g')
 			.attr('transform', 'translate(' + this.marginLeft + ',' + this.marginTop + ')');
 
+		// Read CSV file
 		d3.csv(this.csvfile, function (data) {
 			var format = d3.time.format('%Y-%m-%d');
 			data.forEach(function (d) {
@@ -137,6 +143,7 @@ class Streamgraph {
 			x.domain(d3.extent(data, function (d) { return d.date; }));
 			y.domain([0, d3.max(data, function (d) { return d.y0 + d.y; })]);
 
+			// Apply data to graph
 			svg.selectAll('.layer')
 				.data(layers)
 				.enter().append('path')
@@ -144,6 +151,7 @@ class Streamgraph {
 				.attr('d', function (d) { return area(d.values); })
 				.style('fill', function (d, i) { return z(i); });
 
+			// Add a black outline to streams
 			svg.selectAll('.layer')
 				.attr('stroke', 'black')
 				.attr('stroke-width', '0.5px');
@@ -162,6 +170,7 @@ class Streamgraph {
 				.attr('class', 'y axis')
 				.call(yAxis.orient('left'));
 
+			// Other streams fade when one stream is hovered over with the cursor
 			svg.selectAll('.layer')
 				.attr('opacity', 1)
 				.on('mouseover', function (d, i) {
@@ -172,6 +181,7 @@ class Streamgraph {
 						});
 				})
 
+				// Move the label which appears next to the cursor.
 				.on('mousemove', function (d, i) {
 					var mousePos = d3.mouse(this);
 					var mouseX = mousePos[0];
@@ -181,6 +191,8 @@ class Streamgraph {
 					mouseElem.style.top = mouseY - 10 + 'px';
 					mouseElem.innerHTML = d.key;
 				})
+			
+				// Set opacity back to 1 when the cursor is no longer hovering over a stream.
 				.on('mouseout', function (d, i) {
 					svg.selectAll('.layer')
 						.transition()
@@ -205,15 +217,24 @@ class Streamgraph {
 	}
 }
 
+// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+// NOTE: All code from this point on is just for the example webpage,
+// not part of the reusable D3 graph class!
+// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+// Initialise a new graph and draw it
 const graph1 = new Streamgraph('videogames.csv', 'chart_element', 'blue');
 graph1.drawChart();
 
-var color1Button = d3.select('#colorButton')
+// Select button element
+var graph1Button = d3.select('#colorButton')
   .append('select');
 
+// List of options for the button
 var colorGroup = ['original', 'red', 'orange', 'blue', 'green', 'purple', 'grey'];
 
-color1Button
+// Apply list of options to button
+graph1Button
 	.selectAll('myOptions')
 		.data(colorGroup)
 	.enter()
@@ -221,7 +242,8 @@ color1Button
 	.text(function (d) { return d; })
 	.attr('value', function (d) { return d; });
 
-color1Button.on('change', function (d) {
+// Update the graph when a new color option is selected
+graph1Button.on('change', function (d) {
     var selectedOption = d3.select(this).property('value');
 	if (selectedOption === 'original') {
 		graph1.colorRange = graph1.originalColorRange;
